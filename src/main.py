@@ -1,3 +1,4 @@
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
@@ -15,9 +16,27 @@ relevant_data = []
 # Story only relevant data
 df = df[['Latitude', 'Longitude']]
 
+# Remove duplicates
+df = df.drop_duplicates()
+
+# Switch columns to correct place
+df = df.rename(columns={'Latitude': 'temp', 'Longitude': 'Latitude'})
+df = df.rename(columns={'temp': 'Longitude'})
+
+print(df)
+
 # Filter lat and lang based on min and max values
 df = df[(df['Latitude'] >= minLat) & (df['Latitude'] <= maxLat) & (df['Longitude'] >= minLong) & (df['Longitude'] <= maxLong)]
-print(df)
+
+
+x = np.array(df['Longitude'])
+y = np.array(df['Latitude'])
+
+plt.plot(x, y,  'o')
+plt.xlim(minLong, maxLong)
+plt.ylim(minLat, maxLat)
+
+plt.show()
 
 # data = []
 
