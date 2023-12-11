@@ -1,6 +1,8 @@
-import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
+import matplotlib.image as image
+from matplotlib.offsetbox import (OffsetImage, AnnotationBbox)
 
 df = pd.read_csv('GrowLocations.csv')
 
@@ -23,61 +25,20 @@ df = df.drop_duplicates()
 df = df.rename(columns={'Latitude': 'temp', 'Longitude': 'Latitude'})
 df = df.rename(columns={'temp': 'Longitude'})
 
-print(df)
-
 # Filter lat and lang based on min and max values
 df = df[(df['Latitude'] >= minLat) & (df['Latitude'] <= maxLat) & (df['Longitude'] >= minLong) & (df['Longitude'] <= maxLong)]
 
-
+# Plot graph
 x = np.array(df['Longitude'])
 y = np.array(df['Latitude'])
+
+img = image.imread('map7.png')
+
+fig, ax = plt.subplots()
+ax.imshow(img, extent=[minLong, maxLong, minLat, maxLat])
 
 plt.plot(x, y,  'o')
 plt.xlim(minLong, maxLong)
 plt.ylim(minLat, maxLat)
 
 plt.show()
-
-# data = []
-
-# for line in file:
-    
-#     x = line.split(',')
-#     data.append(x[:4])
-
-   
-# for x in data[:10]: 
-#     print(x)
-    
-    
-    # for x in new_df.index:
-#     try:
-#         lat = new_df.loc[x, 'Latitude']
-#         long = new_df.loc[x, 'Longitude']
-        
-#         if not (minLat <= lat <= maxLat and minLong <= long <= minLong):
-#             df.drop(x, inplace = True)
-            
-#     except Exception as e:
-#         df.drop(x, inplace = True) 
-
-
-# cleanData = []
-
-# for x in data[2:]: 
-
-#     try:
-#         lat = float(x[1])
-#         long = float(x[2])
-        
-#         if minLat <= lat <= maxLat and minLong <= long <= minLong:
-#             cleanData.append(x)
-            
-#     except Exception as e:
-#         pass 
-        
-    
-
-            
-# for x in data: 
-#     print(x)
