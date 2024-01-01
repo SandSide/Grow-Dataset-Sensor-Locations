@@ -58,8 +58,12 @@ def plotGraph(data):
     plt.plot(x, y,  'o')
     plt.xlim(minLong, maxLong)
     plt.ylim(minLat, maxLat)
+    plt.title('Growth Sensors in UK')
+    plt.xlabel('Longitude')
+    plt.ylabel('Latitude')
 
     plt.show()
+
 
 df = pd.read_csv('GrowLocations.csv')
 df = cleanData(df)
