@@ -22,11 +22,14 @@ def cleanData(data):
     """
 
     # Story only relevant data
-    df = data[['Latitude', 'Longitude']]
+    df = data[['Latitude', 'Longitude', 'Type']]
 
     # Remove duplicates
     df = df.drop_duplicates()
-
+    
+    # Keep only type of sensor
+    df['Type'] = df['Type'].apply(lambda x: x.rsplit('.', 1)[-1])
+    
     # Switch columns names to correct place
     df = df.rename(columns={'Latitude': 'temp', 'Longitude': 'Latitude'})
     df = df.rename(columns={'temp': 'Longitude'})
@@ -43,9 +46,12 @@ def plotGraph(data):
         data (data frame): Data to plot
     """
     
+    colors = {'AirTemperature':'red', 'FertilizerLevel':'green', 'SoilMoisture':'blue', 'Light':'yellow', 'BatteryLevel':'orange', 'WaterTankLevel':'black'}
+    
     # Get points
     x = np.array(df['Longitude'])
     y = np.array(df['Latitude'])
+    col = df['Type'].map(colors)
 
     # Manipulate img
     img = image.imread('map7.png')
@@ -53,19 +59,24 @@ def plotGraph(data):
     
     # Set img boundaries
     ax.imshow(img, extent=[minLong, maxLong, minLat, maxLat])
+    
+    grouped = df.groupby('Type')
+    for key, group in grouped:
+        group.plot(ax=ax, kind='scatter', x='Longitude', y='Latitude', label=key, color=colors[key])
 
-    # Plot Graph
-    plt.plot(x, y,  'o')
-    plt.xlim(minLong, maxLong)
-    plt.ylim(minLat, maxLat)
-    plt.title('Growth Sensors in UK')
-    plt.xlabel('Longitude')
-    plt.ylabel('Latitude')
+    # # Plot Graph
+    # plt.scatter(x, y)
+    # plt.xlim(minLong, maxLong)
+    # plt.ylim(minLat, maxLat)
+    # plt.title('Growth Sensors in UK')
+    # plt.xlabel('Longitude')
+    # plt.ylabel('Latitude')
 
     plt.show()
 
 
 df = pd.read_csv('GrowLocations.csv')
 df = cleanData(df)
+print(df)
 plotGraph(df)
 
