@@ -44,6 +44,14 @@ def cleanData(data):
     return df
 
 def extractCoordsFromColumn(col):
+    """Extract longitude and latitude from column if they exist in the string
+
+    Args:
+        col (Data frame column): Columns of strings to extract long and lat from
+
+    Returns:
+        data frame: Data frame of longitude and latitude
+    """
     
     # Find cols which contain lat and long
     col = col[col.str.contains('Latitude', na=False) & col.str.contains('Longitude', na=False)]
