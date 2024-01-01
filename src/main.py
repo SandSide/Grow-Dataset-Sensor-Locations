@@ -12,6 +12,14 @@ minLat = 50.681
 maxLat = 57.985
 
 def cleanData(data):
+    """ Clean the data inside the data frame
+
+    Args:
+        data (data frame): Data frame to clean
+
+    Returns:
+        data frame: Cleaned data frame
+    """
 
     # Story only relevant data
     df = data[['Latitude', 'Longitude']]
@@ -29,6 +37,11 @@ def cleanData(data):
     return df
 
 def plotGraph(data):
+    """Plot data onto a graph
+
+    Args:
+        data (data frame): Data to plot
+    """
     
     # Get points
     x = np.array(df['Longitude'])
@@ -37,6 +50,8 @@ def plotGraph(data):
     # Manipulate img
     img = image.imread('map7.png')
     fig, ax = plt.subplots()
+    
+    # Set img boundaries
     ax.imshow(img, extent=[minLong, maxLong, minLat, maxLat])
 
     # Plot Graph
