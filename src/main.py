@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+import re
 import matplotlib.pyplot as plt
 import matplotlib.image as image
 from matplotlib.offsetbox import (OffsetImage, AnnotationBbox)
@@ -23,19 +24,38 @@ def cleanData(data):
 
     # Story only relevant data
     df = data[['Latitude', 'Longitude']]
-
-    # Remove duplicates
-    df = df.drop_duplicates()
-
+    
     # Switch columns names to correct place
     df = df.rename(columns={'Latitude': 'temp', 'Longitude': 'Latitude'})
     df = df.rename(columns={'temp': 'Longitude'})
+    
+    # Extract lat and long from Serial
+    df_extracted = extractCoordsFromColumn(data['Serial'])
+    
+    # Append extracted coords
+    df = pd.concat([df, df_extracted], ignore_index=True)
+    
+    # Remove duplicates
+    df = df.drop_duplicates()
 
     # Filter lat and lang based on min and max values
     df = df[(df['Latitude'] >= minLat) & (df['Latitude'] <= maxLat) & (df['Longitude'] >= minLong) & (df['Longitude'] <= maxLong)]
     
     return df
 
+def extractCoordsFromColumn(col):
+    
+    # Find cols which contain lat and long
+    col = col[col.str.contains('Latitude', na=False) & col.str.contains('Longitude', na=False)]
+    
+    # Extract longs and lats
+    lats = col.str.extract(r'Latitude:(\d+\.\d+)', expand=False)
+    longs = col.str.extract(r'Longitude:(\d+\.\d+)', expand=False)
+    
+    df = pd.DataFrame({'Longitude': lats, 'Latitude': longs}).astype(float);
+    
+    return df
+        
 def plotGraph(data):
     """Plot data onto a graph
 
@@ -68,4 +88,3 @@ def plotGraph(data):
 df = pd.read_csv('GrowLocations.csv')
 df = cleanData(df)
 plotGraph(df)
-
